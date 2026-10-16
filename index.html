@@ -4,14 +4,23 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PILTAE Game Loader</title>
+<meta name="theme-color" content="#05080d">
+<title>PILTAE // GAME LOADER</title>
+
 <style>
 * { box-sizing: border-box; }
+
+:root {
+    --green: #00ff9c;
+    --panel: rgba(4, 15, 18, .94);
+    --border: #174a3c;
+    --muted: #6b9c8a;
+}
 
 body {
     margin: 0;
     background: #05080d;
-    color: #00ff9c;
+    color: var(--green);
     font-family: Consolas, "Courier New", monospace;
 }
 
@@ -31,7 +40,7 @@ body {
     flex-wrap: wrap;
     gap: 12px;
     padding-bottom: 15px;
-    border-bottom: 1px solid #174a3c;
+    border-bottom: 1px solid var(--border);
 }
 
 .brand {
@@ -41,17 +50,18 @@ body {
     color: #d9fff0;
 }
 
-.status { color: #00ff9c; font-size: 12px; }
+.status { color: var(--green); font-size: 12px; }
 
 .panel {
-    border: 1px solid #174a3c;
-    background: rgba(4, 15, 18, .9);
+    border: 1px solid var(--border);
+    background: var(--panel);
     padding: 20px;
     box-shadow: 0 0 25px #00ff9c0c;
+    min-width: 0;
 }
 
 h2 { color: #d9fff0; font-size: 17px; margin-top: 0; }
-.subtitle { color: #6b9c8a; font-size: 12px; line-height: 1.7; }
+.subtitle { color: var(--muted); font-size: 12px; line-height: 1.7; }
 
 .game-grid {
     display: grid;
@@ -72,13 +82,13 @@ h2 { color: #d9fff0; font-size: 17px; margin-top: 0; }
 }
 
 .game:hover, .game.selected {
-    border-color: #00ff9c;
+    border-color: var(--green);
     background: #0b241d;
     box-shadow: 0 0 15px #00ff9c18;
 }
 
 .game-name { color: #d9fff0; font-weight: bold; margin-bottom: 8px; }
-.game-desc { color: #6b9c8a; font-size: 11px; line-height: 1.5; }
+.game-desc { color: var(--muted); font-size: 11px; line-height: 1.5; }
 
 label {
     display: block;
@@ -92,7 +102,7 @@ select, .start-button {
     padding: 12px;
     font-family: inherit;
     background: #07100f;
-    color: #00ff9c;
+    color: var(--green);
     border: 1px solid #286e55;
     font-size: 13px;
 }
@@ -119,7 +129,7 @@ select, .start-button {
 #progress {
     width: 0%;
     height: 100%;
-    background: linear-gradient(90deg, #008b62, #00ff9c);
+    background: linear-gradient(90deg, #008b62, var(--green));
     box-shadow: 0 0 12px #00ff9c88;
     transition: width .2s linear;
 }
@@ -141,20 +151,109 @@ select, .start-button {
 }
 
 .stat { border: 1px solid #143b31; padding: 13px; min-width: 0; }
-.stat-label { color: #6b9c8a; font-size: 11px; margin-bottom: 8px; }
-.stat-value { color: #d9fff0; font-size: clamp(15px, 2vw, 23px); overflow-wrap: anywhere; }
-
-#logs {
-    height: 180px;
-    overflow: hidden;
-    font-size: 12px;
-    line-height: 1.8;
-    color: #69d8ad;
+.stat-label { color: var(--muted); font-size: 11px; margin-bottom: 8px; }
+.stat-value {
+    color: #d9fff0;
+    font-size: clamp(15px, 2vw, 23px);
+    overflow-wrap: anywhere;
 }
 
-.log-line { overflow-wrap: anywhere; }
-.green { color: #00ff9c; }
-.yellow { color: #ffdf70; }
+.hidden { display: none !important; }
+
+.console-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.capture-status { font-size: 11px; color: var(--green); }
+
+.live-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin-right: 6px;
+    background: var(--green);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--green);
+}
+
+.interface-info {
+    padding: 12px;
+    border: 1px solid var(--border);
+    background: #030908;
+    color: #79b9a0;
+    font-size: 11px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
+
+.packet-summary {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+    margin: 12px 0;
+}
+
+.packet-summary div {
+    padding: 10px;
+    background: #06110e;
+    border: 1px solid var(--border);
+}
+
+.packet-summary span, .packet-summary strong { display: block; }
+.packet-summary span { color: var(--muted); font-size: 10px; }
+.packet-summary strong { color: var(--green); font-size: 20px; margin-top: 5px; }
+
+.packet-table-wrap {
+    height: 330px;
+    overflow: auto;
+    border: 1px solid var(--border);
+    background: #020605;
+}
+
+.packet-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.packet-table th {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    padding: 10px 8px;
+    color: #d9fff0;
+    background: #10251e;
+    border-bottom: 1px solid #286e55;
+}
+
+.packet-table td {
+    padding: 7px 8px;
+    border-bottom: 1px solid #10251e;
+    color: #7acba9;
+}
+
+.packet-table tr.tcp td { color: #80d9ff; }
+.packet-table tr.udp td { color: #c5b0ff; }
+.packet-table tr.dns td { color: #ffdf70; }
+.packet-table tr.http td { color: var(--green); }
+.packet-table tr.arp td { color: #ffbd7a; }
+
+.packet-table tr:hover td { background: #0c211a; }
+
+.terminal-footer {
+    margin-top: 12px;
+    color: var(--green);
+    font-size: 11px;
+    line-height: 1.8;
+    overflow-wrap: anywhere;
+}
 
 .footer {
     color: #497765;
@@ -166,9 +265,7 @@ select, .start-button {
     flex-wrap: wrap;
 }
 
-.hidden { display: none !important; }
-
-/* Simulated Windows warning */
+/* Simulated Windows-style demo warning */
 .warning-overlay {
     position: fixed;
     inset: 0;
@@ -197,6 +294,7 @@ select, .start-button {
 }
 
 .warning-content { padding: 22px; }
+
 .warning-content h2 {
     color: #222;
     font-size: 21px;
@@ -221,6 +319,8 @@ select, .start-button {
     padding-top: 12px;
 }
 
+.warning-actions { padding: 0 22px 22px; text-align: right; }
+
 .close-button {
     padding: 11px 24px;
     border: 0;
@@ -230,14 +330,10 @@ select, .start-button {
     font-family: inherit;
 }
 
-.warning-actions {
-    padding: 0 22px 22px;
-    text-align: right;
-}
-
 @media (max-width: 650px) {
     #app { padding: 13px; }
     .stats { grid-template-columns: 1fr; }
+    .packet-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 </style>
 </head>
@@ -299,7 +395,9 @@ select, .start-button {
     <div class="panel hidden" id="downloadPanel">
         <h2 id="downloadTitle">Preparing demo...</h2>
         <div class="subtitle" id="downloadSubtitle">Initializing simulated transfer...</div>
+
         <div class="progress-track"><div id="progress"></div></div>
+
         <div class="progress-row">
             <span id="percent">0%</span>
             <span id="phase">Initializing...</span>
@@ -322,14 +420,53 @@ select, .start-button {
     </div>
 
     <div class="panel hidden" id="consolePanel">
-        <h2>TRANSFER CONSOLE</h2>
-        <div class="subtitle">Simulated diagnostic output</div>
-        <div id="logs"></div>
+        <div class="console-header">
+            <div>
+                <h2>WIRESHARK // WLAN0 MONITOR</h2>
+                <div class="subtitle">PILTAE PACKET ANALYZER · SIMULATED CAPTURE</div>
+            </div>
+            <div class="capture-status">
+                <span class="live-dot"></span> CAPTURING DEMO
+            </div>
+        </div>
+
+        <div class="interface-info">
+            INTERFACE: wlan0 &nbsp; MODE: MONITOR SIMULATION<br>
+            FILTER: ALL PACKETS &nbsp; SOURCE: GENERATED SAMPLE DATA
+        </div>
+
+        <div class="packet-summary">
+            <div><span>PACKETS</span><strong id="packetCount">0</strong></div>
+            <div><span>TCP</span><strong id="tcpCount">0</strong></div>
+            <div><span>UDP / DNS</span><strong id="udpCount">0</strong></div>
+            <div><span>OTHER</span><strong id="otherCount">0</strong></div>
+        </div>
+
+        <div class="packet-table-wrap">
+            <table class="packet-table">
+                <thead>
+                    <tr>
+                        <th>No.</th>
+                        <th>Time</th>
+                        <th>Source</th>
+                        <th>Destination</th>
+                        <th>Protocol</th>
+                        <th>Length</th>
+                        <th>Info</th>
+                    </tr>
+                </thead>
+                <tbody id="packetRows"></tbody>
+            </table>
+        </div>
+
+        <div class="terminal-footer" id="captureStatus">
+            [SIM] Waiting for demo packets...
+        </div>
     </div>
 
     <div class="footer">
-        <span>PILTAE GAME LOADER v5.2</span>
-        <span>DEMO MODE · NO FILES DOWNLOADED OR INSTALLED</span>
+        <span>PILTAE GAME LOADER v5.3</span>
+        <span>SIMULATION ONLY · NO FILES DOWNLOADED</span>
     </div>
 </div>
 
@@ -344,7 +481,7 @@ select, .start-button {
             </p>
             <p class="warning-detail">
                 Demo status: Simulation only<br>
-                Error code: 0x80070005
+                Example error code: 0x80070005
             </p>
             <p class="demo-note">
                 No files were downloaded or installed. This message is
@@ -371,13 +508,115 @@ const phaseText = document.getElementById("phase");
 const speedText = document.getElementById("speed");
 const receivedText = document.getElementById("received");
 const remainingText = document.getElementById("remaining");
-const logs = document.getElementById("logs");
+const logs = document.getElementById("packetRows");
 const warning = document.getElementById("warning");
+
+const packetCount = document.getElementById("packetCount");
+const tcpCount = document.getElementById("tcpCount");
+const udpCount = document.getElementById("udpCount");
+const otherCount = document.getElementById("otherCount");
+const captureStatus = document.getElementById("captureStatus");
 
 let selectedGame = "CS2";
 let downloadTimer = null;
 let logTimer = null;
 let completionTimer = null;
+let packetTimer = null;
+let packetNumber = 0;
+let tcpPackets = 0;
+let udpPackets = 0;
+let otherPackets = 0;
+
+const demoPackets = [
+    ["TCP", "192.168.1.24", "192.168.1.1", 66, "443 → 52144 [ACK]"],
+    ["UDP", "192.168.1.24", "192.168.1.1", 78, "Demo UDP packet"],
+    ["DNS", "192.168.1.24", "192.168.1.1", 72, "DNS query (SIMULATED)"],
+    ["DNS", "192.168.1.1", "192.168.1.24", 94, "DNS response (SIMULATED)"],
+    ["TCP", "192.168.1.24", "192.168.1.1", 74, "[SYN] Seq=0 Win=64240"],
+    ["TCP", "192.168.1.1", "192.168.1.24", 74, "[SYN, ACK]"],
+    ["UDP", "192.168.1.24", "192.168.1.255", 90, "Demo broadcast packet"],
+    ["HTTP", "192.168.1.24", "192.168.1.1", 128, "GET /demo (SIMULATED)"],
+    ["TCP", "192.168.1.24", "192.168.1.1", 60, "[ACK] Len=0"],
+    ["ARP", "192.168.1.24", "192.168.1.1", 60, "Who has 192.168.1.1?"],
+    ["UDP", "192.168.1.1", "192.168.1.24", 82, "Demo response"],
+    ["OTHER", "00:11:22:33:44:55", "ff:ff:ff:ff:ff:ff", 60, "Demo link-layer frame"]
+];
+
+function stopTimers() {
+    if (downloadTimer) clearInterval(downloadTimer);
+    if (logTimer) clearInterval(logTimer);
+    if (completionTimer) clearTimeout(completionTimer);
+    if (packetTimer) clearInterval(packetTimer);
+
+    downloadTimer = null;
+    logTimer = null;
+    completionTimer = null;
+    packetTimer = null;
+}
+
+function addDemoPacket() {
+    const packet = demoPackets[Math.floor(Math.random() * demoPackets.length)];
+    const [protocol, source, destination, length, info] = packet;
+
+    packetNumber++;
+
+    if (protocol === "TCP") tcpPackets++;
+    else if (protocol === "UDP" || protocol === "DNS") udpPackets++;
+    else otherPackets++;
+
+    const row = document.createElement("tr");
+    row.className = protocol.toLowerCase();
+
+    const now = new Date();
+    const time = now.toLocaleTimeString("en-US", { hour12: false }) +
+        "." + String(now.getMilliseconds()).padStart(3, "0");
+
+    [packetNumber, time, source, destination, protocol, length, info]
+        .forEach(value => {
+            const cell = document.createElement("td");
+            cell.textContent = value;
+            row.appendChild(cell);
+        });
+
+    logs.appendChild(row);
+
+    while (logs.children.length > 100) {
+        logs.removeChild(logs.firstChild);
+    }
+
+    packetCount.textContent = packetNumber;
+    tcpCount.textContent = tcpPackets;
+    udpCount.textContent = udpPackets;
+    otherCount.textContent = otherPackets;
+
+    const tableWrap = document.querySelector(".packet-table-wrap");
+    tableWrap.scrollTop = tableWrap.scrollHeight;
+
+    captureStatus.textContent =
+        "[SIM] wlan0 · Generated " + packetNumber +
+        " demo packets · No live traffic captured";
+}
+
+function startPacketSimulation() {
+    if (packetTimer) clearInterval(packetTimer);
+
+    logs.replaceChildren();
+    packetNumber = 0;
+    tcpPackets = 0;
+    udpPackets = 0;
+    otherPackets = 0;
+
+    packetCount.textContent = "0";
+    tcpCount.textContent = "0";
+    udpCount.textContent = "0";
+    otherCount.textContent = "0";
+
+    captureStatus.textContent = "[SIM] Starting visual packet stream...";
+
+    for (let i = 0; i < 12; i++) addDemoPacket();
+
+    packetTimer = setInterval(addDemoPacket, 140);
+}
 
 games.forEach(button => {
     button.addEventListener("click", () => {
@@ -387,24 +626,14 @@ games.forEach(button => {
     });
 });
 
-function addLog(message, colorClass = "") {
-    const line = document.createElement("div");
-    line.className = "log-line " + colorClass;
-    line.textContent = "[" + new Date().toLocaleTimeString() + "] " + message;
-    logs.appendChild(line);
-
-    while (logs.children.length > 9) {
-        logs.removeChild(logs.firstChild);
-    }
-}
-
-function stopTimers() {
-    if (downloadTimer) clearInterval(downloadTimer);
-    if (logTimer) clearInterval(logTimer);
-    if (completionTimer) clearTimeout(completionTimer);
-    downloadTimer = null;
-    logTimer = null;
-    completionTimer = null;
+function addLog(message) {
+    const row = document.createElement("tr");
+    const cell = document.createElement("td");
+    cell.colSpan = 7;
+    cell.textContent = "[DEMO] " + message;
+    cell.style.color = "#00ff9c";
+    row.appendChild(cell);
+    logs.appendChild(row);
 }
 
 startButton.addEventListener("click", startDemo);
@@ -432,27 +661,8 @@ function startDemo() {
     speedText.textContent = "0 MB/s";
     receivedText.textContent = "0 / 850 MB";
     remainingText.textContent = "Calculating";
-    logs.replaceChildren();
 
-    const messages = [
-        "[INIT] Starting visual demo...",
-        "[GAME] Selected game: " + selectedGame,
-        "[PKG] Selected demo: " + type,
-        "[NET] Simulating connection...",
-        "[OK] Demo connection ready.",
-        "[DEMO] Simulating progress...",
-        "[SCAN] Simulating a security check...",
-        "[NOTICE] Displaying demo warning at completion."
-    ];
-
-    let messageIndex = 0;
-    addLog(messages[messageIndex++], "green");
-
-    logTimer = setInterval(() => {
-        if (messageIndex < messages.length) {
-            addLog(messages[messageIndex++], "green");
-        }
-    }, 1100);
+    startPacketSimulation();
 
     const durationSeconds = 12;
     const totalMB = 850;
@@ -471,23 +681,23 @@ function startDemo() {
         remainingText.textContent =
             Math.max(0, durationSeconds - elapsed).toFixed(0) + " sec";
 
-        if (progress < 25) {
-            phaseText.textContent = "Connecting...";
-        } else if (progress < 65) {
-            phaseText.textContent = "Running demo...";
-        } else if (progress < 90) {
-            phaseText.textContent = "Verifying demo...";
-        } else if (progress < 100) {
-            phaseText.textContent = "Finalizing...";
-        } else {
+        if (progress < 25) phaseText.textContent = "Connecting...";
+        else if (progress < 65) phaseText.textContent = "Running demo...";
+        else if (progress < 90) phaseText.textContent = "Verifying demo...";
+        else if (progress < 100) phaseText.textContent = "Finalizing...";
+        else {
             phaseText.textContent = "Demo complete";
             speedText.textContent = "0 MB/s";
             remainingText.textContent = "Complete";
 
-            stopTimers();
-            addLog("[OK] Demo finished. No files were downloaded.", "green");
+            if (downloadTimer) clearInterval(downloadTimer);
+            downloadTimer = null;
+
+            captureStatus.textContent =
+                "[SIM] Demo finished · Packet display is fictional";
 
             completionTimer = setTimeout(() => {
+                stopTimers();
                 warning.style.display = "flex";
             }, 700);
         }
@@ -496,13 +706,15 @@ function startDemo() {
 
 function closeDemoWarning() {
     warning.style.display = "none";
+    stopTimers();
     downloadPanel.classList.add("hidden");
     consolePanel.classList.add("hidden");
     chooser.classList.remove("hidden");
     startButton.disabled = false;
 }
 
-document.getElementById("closeWarning").addEventListener("click", closeDemoWarning);
+document.getElementById("closeWarning")
+    .addEventListener("click", closeDemoWarning);
 
 warning.addEventListener("click", event => {
     if (event.target === warning) closeDemoWarning();
