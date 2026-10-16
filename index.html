@@ -7,12 +7,14 @@
 <title>PILTAE Game Loader</title>
 <style>
 * { box-sizing: border-box; }
+
 body {
     margin: 0;
     background: #05080d;
     color: #00ff9c;
     font-family: Consolas, "Courier New", monospace;
 }
+
 #app {
     min-height: 100vh;
     padding: 24px;
@@ -21,6 +23,7 @@ body {
     gap: 17px;
     background: radial-gradient(ellipse at top, #102b29, #05080d 70%);
 }
+
 .topbar {
     display: flex;
     justify-content: space-between;
@@ -30,27 +33,33 @@ body {
     padding-bottom: 15px;
     border-bottom: 1px solid #174a3c;
 }
+
 .brand {
     font-size: clamp(19px, 3vw, 28px);
     font-weight: bold;
     letter-spacing: 3px;
     color: #d9fff0;
 }
+
 .status { color: #00ff9c; font-size: 12px; }
+
 .panel {
     border: 1px solid #174a3c;
     background: rgba(4, 15, 18, .9);
     padding: 20px;
     box-shadow: 0 0 25px #00ff9c0c;
 }
+
 h2 { color: #d9fff0; font-size: 17px; margin-top: 0; }
 .subtitle { color: #6b9c8a; font-size: 12px; line-height: 1.7; }
+
 .game-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
     gap: 12px;
     margin-top: 17px;
 }
+
 .game {
     background: #07100f;
     border: 1px solid #245443;
@@ -61,19 +70,23 @@ h2 { color: #d9fff0; font-size: 17px; margin-top: 0; }
     cursor: pointer;
     transition: .15s;
 }
+
 .game:hover, .game.selected {
     border-color: #00ff9c;
     background: #0b241d;
     box-shadow: 0 0 15px #00ff9c18;
 }
+
 .game-name { color: #d9fff0; font-weight: bold; margin-bottom: 8px; }
 .game-desc { color: #6b9c8a; font-size: 11px; line-height: 1.5; }
+
 label {
     display: block;
     color: #8ab8a5;
     font-size: 12px;
     margin: 16px 0 8px;
 }
+
 select, .start-button {
     width: 100%;
     padding: 12px;
@@ -83,14 +96,17 @@ select, .start-button {
     border: 1px solid #286e55;
     font-size: 13px;
 }
+
 .start-button {
     margin-top: 17px;
     background: #063a2a;
     cursor: pointer;
     font-weight: bold;
 }
+
 .start-button:hover { background: #07563d; }
 .start-button:disabled { opacity: .5; cursor: wait; }
+
 .progress-track {
     width: 100%;
     height: 22px;
@@ -99,6 +115,7 @@ select, .start-button {
     padding: 3px;
     margin-top: 18px;
 }
+
 #progress {
     width: 0%;
     height: 100%;
@@ -106,6 +123,7 @@ select, .start-button {
     box-shadow: 0 0 12px #00ff9c88;
     transition: width .2s linear;
 }
+
 .progress-row {
     display: flex;
     justify-content: space-between;
@@ -114,15 +132,18 @@ select, .start-button {
     margin-top: 10px;
     font-size: 12px;
 }
+
 .stats {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 12px;
     margin-top: 18px;
 }
+
 .stat { border: 1px solid #143b31; padding: 13px; min-width: 0; }
 .stat-label { color: #6b9c8a; font-size: 11px; margin-bottom: 8px; }
 .stat-value { color: #d9fff0; font-size: clamp(15px, 2vw, 23px); overflow-wrap: anywhere; }
+
 #logs {
     height: 180px;
     overflow: hidden;
@@ -130,10 +151,11 @@ select, .start-button {
     line-height: 1.8;
     color: #69d8ad;
 }
+
 .log-line { overflow-wrap: anywhere; }
 .green { color: #00ff9c; }
 .yellow { color: #ffdf70; }
-.red { color: #ff5b68; }
+
 .footer {
     color: #497765;
     font-size: 11px;
@@ -143,13 +165,83 @@ select, .start-button {
     gap: 12px;
     flex-wrap: wrap;
 }
+
 .hidden { display: none !important; }
+
+/* Simulated Windows warning */
+.warning-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, .84);
+    font-family: "Segoe UI", Arial, sans-serif;
+    padding: 15px;
+}
+
+.warning-box {
+    width: min(510px, 95vw);
+    background: #f3f3f3;
+    color: #222;
+    border: 1px solid #888;
+    box-shadow: 0 18px 60px #000;
+}
+
+.warning-title {
+    padding: 14px 17px;
+    background: #fff;
+    border-bottom: 1px solid #ddd;
+    font-size: 13px;
+}
+
+.warning-content { padding: 22px; }
+.warning-content h2 {
+    color: #222;
+    font-size: 21px;
+    font-weight: 500;
+    line-height: 1.3;
+}
+
+.warning-content p { font-size: 13px; line-height: 1.6; }
+
+.warning-detail {
+    padding: 11px;
+    background: #e5e5e5;
+    font-family: Consolas, monospace;
+    font-size: 11px !important;
+    overflow-wrap: anywhere;
+}
+
+.demo-note {
+    color: #555;
+    font-size: 11px !important;
+    border-top: 1px solid #ddd;
+    padding-top: 12px;
+}
+
+.close-button {
+    padding: 11px 24px;
+    border: 0;
+    background: #0067c0;
+    color: white;
+    cursor: pointer;
+    font-family: inherit;
+}
+
+.warning-actions {
+    padding: 0 22px 22px;
+    text-align: right;
+}
+
 @media (max-width: 650px) {
     #app { padding: 13px; }
     .stats { grid-template-columns: 1fr; }
 }
 </style>
 </head>
+
 <body>
 <div id="app">
     <div class="topbar">
@@ -160,8 +252,8 @@ select, .start-button {
     <div class="panel" id="chooser">
         <h2>SELECT YOUR GAME</h2>
         <div class="subtitle">
-            Choose a game and a simulated package to begin the demo.
-            All downloads shown here are fictional.
+            Select a game and run the visual demo.
+            No files are downloaded or installed.
         </div>
 
         <div class="game-grid">
@@ -171,15 +263,15 @@ select, .start-button {
             </button>
             <button class="game" data-game="Minecraft">
                 <div class="game-name">MINECRAFT</div>
-                <div class="game-desc">Java Edition · Utility mod demo</div>
+                <div class="game-desc">Java Edition · Utility demo</div>
             </button>
             <button class="game" data-game="Rainbow Six Siege">
                 <div class="game-name">RAINBOW SIX SIEGE</div>
-                <div class="game-desc">Operator overlay / ESP demo</div>
+                <div class="game-desc">Overlay demonstration</div>
             </button>
             <button class="game" data-game="Fortnite">
                 <div class="game-name">FORTNITE</div>
-                <div class="game-desc">Aim trainer / overlay demo</div>
+                <div class="game-desc">Aim trainer demonstration</div>
             </button>
             <button class="game" data-game="Valorant">
                 <div class="game-name">VALORANT</div>
@@ -187,19 +279,20 @@ select, .start-button {
             </button>
             <button class="game" data-game="GTA V">
                 <div class="game-name">GTA V</div>
-                <div class="game-desc">Single-player mod menu demo</div>
+                <div class="game-desc">Single-player mod demo</div>
             </button>
         </div>
 
-        <label for="cheatType">PACKAGE TYPE</label>
-        <select id="cheatType">
-            <option value="Aim Assist">Aim Assist</option>
-            <option value="ESP / Wallhack">ESP / Wallhack</option>
-            <option value="Triggerbot">Triggerbot</option>
-            <option value="Mod Menu">Mod Menu</option>
+        <label for="packageType">DEMO PACKAGE</label>
+        <select id="packageType">
+            <option value="Aim Trainer">Aim Trainer</option>
+            <option value="Visual Overlay Demo">Visual Overlay Demo</option>
+            <option value="Practice Tools">Practice Tools</option>
+            <option value="Mod Menu Demo">Mod Menu Demo</option>
             <option value="Utility Pack">Utility Pack</option>
-            <option value="Full Bundle">Full Bundle</option>
+            <option value="Full Demo Bundle">Full Demo Bundle</option>
         </select>
+
         <button class="start-button" id="startButton">START DEMO</button>
     </div>
 
@@ -209,8 +302,9 @@ select, .start-button {
         <div class="progress-track"><div id="progress"></div></div>
         <div class="progress-row">
             <span id="percent">0%</span>
-            <span id="phase">Initializing transfer...</span>
+            <span id="phase">Initializing...</span>
         </div>
+
         <div class="stats">
             <div class="stat">
                 <div class="stat-label">SIMULATED SPEED</div>
@@ -229,7 +323,7 @@ select, .start-button {
 
     <div class="panel hidden" id="consolePanel">
         <h2>TRANSFER CONSOLE</h2>
-        <div class="subtitle">Simulated diagnostic output · No files are downloaded</div>
+        <div class="subtitle">Simulated diagnostic output</div>
         <div id="logs"></div>
     </div>
 
@@ -239,9 +333,34 @@ select, .start-button {
     </div>
 </div>
 
+<div class="warning-overlay" id="warning" role="dialog" aria-modal="true" aria-labelledby="warningHeading">
+    <div class="warning-box">
+        <div class="warning-title">🛡 Windows Security — SIMULATED DEMO</div>
+        <div class="warning-content">
+            <h2 id="warningHeading">Windows failed to protect your PC</h2>
+            <p>
+                This is a simulated Windows-style warning shown by the
+                PILTAE demo page. It is not a real Windows Security alert.
+            </p>
+            <p class="warning-detail">
+                Demo status: Simulation only<br>
+                Error code: 0x80070005
+            </p>
+            <p class="demo-note">
+                No files were downloaded or installed. This message is
+                part of the webpage and does not reflect your computer's
+                actual security status.
+            </p>
+        </div>
+        <div class="warning-actions">
+            <button class="close-button" id="closeWarning">Close demo</button>
+        </div>
+    </div>
+</div>
+
 <script>
 const games = document.querySelectorAll(".game");
-const cheatType = document.getElementById("cheatType");
+const packageType = document.getElementById("packageType");
 const startButton = document.getElementById("startButton");
 const chooser = document.getElementById("chooser");
 const downloadPanel = document.getElementById("downloadPanel");
@@ -253,10 +372,12 @@ const speedText = document.getElementById("speed");
 const receivedText = document.getElementById("received");
 const remainingText = document.getElementById("remaining");
 const logs = document.getElementById("logs");
+const warning = document.getElementById("warning");
 
 let selectedGame = "CS2";
 let downloadTimer = null;
 let logTimer = null;
+let completionTimer = null;
 
 games.forEach(button => {
     button.addEventListener("click", () => {
@@ -271,25 +392,39 @@ function addLog(message, colorClass = "") {
     line.className = "log-line " + colorClass;
     line.textContent = "[" + new Date().toLocaleTimeString() + "] " + message;
     logs.appendChild(line);
-    while (logs.children.length > 9) logs.removeChild(logs.firstChild);
+
+    while (logs.children.length > 9) {
+        logs.removeChild(logs.firstChild);
+    }
 }
 
-startButton.addEventListener("click", startDownload);
-
-function startDownload() {
+function stopTimers() {
     if (downloadTimer) clearInterval(downloadTimer);
     if (logTimer) clearInterval(logTimer);
+    if (completionTimer) clearTimeout(completionTimer);
+    downloadTimer = null;
+    logTimer = null;
+    completionTimer = null;
+}
 
-    const type = cheatType.value;
+startButton.addEventListener("click", startDemo);
+
+function startDemo() {
+    stopTimers();
+    warning.style.display = "none";
+
+    const type = packageType.value;
     const packageName = selectedGame + " " + type;
 
     chooser.classList.add("hidden");
     downloadPanel.classList.remove("hidden");
     consolePanel.classList.remove("hidden");
-
     startButton.disabled = true;
-    document.getElementById("downloadTitle").textContent = "Running demo: " + packageName;
-    document.getElementById("downloadSubtitle").textContent = "Simulated activity · " + selectedGame;
+
+    document.getElementById("downloadTitle").textContent =
+        "Running demo: " + packageName;
+    document.getElementById("downloadSubtitle").textContent =
+        "Simulated activity · " + selectedGame;
 
     progressBar.style.width = "0%";
     percentText.textContent = "0%";
@@ -300,14 +435,14 @@ function startDownload() {
     logs.replaceChildren();
 
     const messages = [
-        "[INIT] Starting simulated loader...",
+        "[INIT] Starting visual demo...",
         "[GAME] Selected game: " + selectedGame,
-        "[PKG] Selected type: " + type,
+        "[PKG] Selected demo: " + type,
         "[NET] Simulating connection...",
         "[OK] Demo connection ready.",
-        "[DL] Simulating package transfer...",
-        "[SCAN] Running simulated checks...",
-        "[OK] Demo checks complete."
+        "[DEMO] Simulating progress...",
+        "[SCAN] Simulating a security check...",
+        "[NOTICE] Displaying demo warning at completion."
     ];
 
     let messageIndex = 0;
@@ -317,7 +452,7 @@ function startDownload() {
         if (messageIndex < messages.length) {
             addLog(messages[messageIndex++], "green");
         }
-    }, 1000);
+    }, 1100);
 
     const durationSeconds = 12;
     const totalMB = 850;
@@ -333,7 +468,8 @@ function startDownload() {
         percentText.textContent = Math.floor(progress) + "%";
         speedText.textContent = speed + " MB/s";
         receivedText.textContent = received + " / " + totalMB + " MB";
-        remainingText.textContent = Math.max(0, durationSeconds - elapsed).toFixed(0) + " sec";
+        remainingText.textContent =
+            Math.max(0, durationSeconds - elapsed).toFixed(0) + " sec";
 
         if (progress < 25) {
             phaseText.textContent = "Connecting...";
@@ -348,28 +484,29 @@ function startDownload() {
             speedText.textContent = "0 MB/s";
             remainingText.textContent = "Complete";
 
-            clearInterval(downloadTimer);
-            clearInterval(logTimer);
-            downloadTimer = null;
-            logTimer = null;
-
+            stopTimers();
             addLog("[OK] Demo finished. No files were downloaded.", "green");
 
-            const backButton = document.createElement("button");
-            backButton.className = "start-button";
-            backButton.textContent = "BACK TO GAME SELECTOR";
-            backButton.onclick = () => {
-                downloadPanel.classList.add("hidden");
-                consolePanel.classList.add("hidden");
-                chooser.classList.remove("hidden");
-                startButton.disabled = false;
-                backButton.remove();
-            };
-            downloadPanel.appendChild(backButton);
+            completionTimer = setTimeout(() => {
+                warning.style.display = "flex";
+            }, 700);
         }
     }, 100);
 }
+
+function closeDemoWarning() {
+    warning.style.display = "none";
+    downloadPanel.classList.add("hidden");
+    consolePanel.classList.add("hidden");
+    chooser.classList.remove("hidden");
+    startButton.disabled = false;
+}
+
+document.getElementById("closeWarning").addEventListener("click", closeDemoWarning);
+
+warning.addEventListener("click", event => {
+    if (event.target === warning) closeDemoWarning();
+});
 </script>
 </body>
 </html>
-
