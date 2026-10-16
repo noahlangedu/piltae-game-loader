@@ -1,1 +1,375 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PILTAE Game Loader</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    background: #05080d;
+    color: #00ff9c;
+    font-family: Consolas, "Courier New", monospace;
+}
+#app {
+    min-height: 100vh;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    background: radial-gradient(ellipse at top, #102b29, #05080d 70%);
+}
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #174a3c;
+}
+.brand {
+    font-size: clamp(19px, 3vw, 28px);
+    font-weight: bold;
+    letter-spacing: 3px;
+    color: #d9fff0;
+}
+.status { color: #00ff9c; font-size: 12px; }
+.panel {
+    border: 1px solid #174a3c;
+    background: rgba(4, 15, 18, .9);
+    padding: 20px;
+    box-shadow: 0 0 25px #00ff9c0c;
+}
+h2 { color: #d9fff0; font-size: 17px; margin-top: 0; }
+.subtitle { color: #6b9c8a; font-size: 12px; line-height: 1.7; }
+.game-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 12px;
+    margin-top: 17px;
+}
+.game {
+    background: #07100f;
+    border: 1px solid #245443;
+    color: #b8dacc;
+    font-family: inherit;
+    text-align: left;
+    padding: 15px;
+    cursor: pointer;
+    transition: .15s;
+}
+.game:hover, .game.selected {
+    border-color: #00ff9c;
+    background: #0b241d;
+    box-shadow: 0 0 15px #00ff9c18;
+}
+.game-name { color: #d9fff0; font-weight: bold; margin-bottom: 8px; }
+.game-desc { color: #6b9c8a; font-size: 11px; line-height: 1.5; }
+label {
+    display: block;
+    color: #8ab8a5;
+    font-size: 12px;
+    margin: 16px 0 8px;
+}
+select, .start-button {
+    width: 100%;
+    padding: 12px;
+    font-family: inherit;
+    background: #07100f;
+    color: #00ff9c;
+    border: 1px solid #286e55;
+    font-size: 13px;
+}
+.start-button {
+    margin-top: 17px;
+    background: #063a2a;
+    cursor: pointer;
+    font-weight: bold;
+}
+.start-button:hover { background: #07563d; }
+.start-button:disabled { opacity: .5; cursor: wait; }
+.progress-track {
+    width: 100%;
+    height: 22px;
+    border: 1px solid #286e55;
+    background: #07100f;
+    padding: 3px;
+    margin-top: 18px;
+}
+#progress {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #008b62, #00ff9c);
+    box-shadow: 0 0 12px #00ff9c88;
+    transition: width .2s linear;
+}
+.progress-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 10px;
+    font-size: 12px;
+}
+.stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+    margin-top: 18px;
+}
+.stat { border: 1px solid #143b31; padding: 13px; min-width: 0; }
+.stat-label { color: #6b9c8a; font-size: 11px; margin-bottom: 8px; }
+.stat-value { color: #d9fff0; font-size: clamp(15px, 2vw, 23px); overflow-wrap: anywhere; }
+#logs {
+    height: 180px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 1.8;
+    color: #69d8ad;
+}
+.log-line { overflow-wrap: anywhere; }
+.green { color: #00ff9c; }
+.yellow { color: #ffdf70; }
+.red { color: #ff5b68; }
+.footer {
+    color: #497765;
+    font-size: 11px;
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.hidden { display: none !important; }
+@media (max-width: 650px) {
+    #app { padding: 13px; }
+    .stats { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+<div id="app">
+    <div class="topbar">
+        <div class="brand">PILTAE // GAME LOADER</div>
+        <div class="status">● LOADER ONLINE</div>
+    </div>
+
+    <div class="panel" id="chooser">
+        <h2>SELECT YOUR GAME</h2>
+        <div class="subtitle">
+            Choose a game and a simulated package to begin the demo.
+            All downloads shown here are fictional.
+        </div>
+
+        <div class="game-grid">
+            <button class="game selected" data-game="CS2">
+                <div class="game-name">CS2</div>
+                <div class="game-desc">Counter-Strike 2 · Aim / ESP demo</div>
+            </button>
+            <button class="game" data-game="Minecraft">
+                <div class="game-name">MINECRAFT</div>
+                <div class="game-desc">Java Edition · Utility mod demo</div>
+            </button>
+            <button class="game" data-game="Rainbow Six Siege">
+                <div class="game-name">RAINBOW SIX SIEGE</div>
+                <div class="game-desc">Operator overlay / ESP demo</div>
+            </button>
+            <button class="game" data-game="Fortnite">
+                <div class="game-name">FORTNITE</div>
+                <div class="game-desc">Aim trainer / overlay demo</div>
+            </button>
+            <button class="game" data-game="Valorant">
+                <div class="game-name">VALORANT</div>
+                <div class="game-desc">Training utility demo</div>
+            </button>
+            <button class="game" data-game="GTA V">
+                <div class="game-name">GTA V</div>
+                <div class="game-desc">Single-player mod menu demo</div>
+            </button>
+        </div>
+
+        <label for="cheatType">PACKAGE TYPE</label>
+        <select id="cheatType">
+            <option value="Aim Assist">Aim Assist</option>
+            <option value="ESP / Wallhack">ESP / Wallhack</option>
+            <option value="Triggerbot">Triggerbot</option>
+            <option value="Mod Menu">Mod Menu</option>
+            <option value="Utility Pack">Utility Pack</option>
+            <option value="Full Bundle">Full Bundle</option>
+        </select>
+        <button class="start-button" id="startButton">START DEMO</button>
+    </div>
+
+    <div class="panel hidden" id="downloadPanel">
+        <h2 id="downloadTitle">Preparing demo...</h2>
+        <div class="subtitle" id="downloadSubtitle">Initializing simulated transfer...</div>
+        <div class="progress-track"><div id="progress"></div></div>
+        <div class="progress-row">
+            <span id="percent">0%</span>
+            <span id="phase">Initializing transfer...</span>
+        </div>
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-label">SIMULATED SPEED</div>
+                <div class="stat-value" id="speed">0 MB/s</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">SIMULATED DATA</div>
+                <div class="stat-value" id="received">0 / 850 MB</div>
+            </div>
+            <div class="stat">
+                <div class="stat-label">TIME REMAINING</div>
+                <div class="stat-value" id="remaining">Calculating</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="panel hidden" id="consolePanel">
+        <h2>TRANSFER CONSOLE</h2>
+        <div class="subtitle">Simulated diagnostic output · No files are downloaded</div>
+        <div id="logs"></div>
+    </div>
+
+    <div class="footer">
+        <span>PILTAE GAME LOADER v5.2</span>
+        <span>DEMO MODE · NO FILES DOWNLOADED OR INSTALLED</span>
+    </div>
+</div>
+
+<script>
+const games = document.querySelectorAll(".game");
+const cheatType = document.getElementById("cheatType");
+const startButton = document.getElementById("startButton");
+const chooser = document.getElementById("chooser");
+const downloadPanel = document.getElementById("downloadPanel");
+const consolePanel = document.getElementById("consolePanel");
+const progressBar = document.getElementById("progress");
+const percentText = document.getElementById("percent");
+const phaseText = document.getElementById("phase");
+const speedText = document.getElementById("speed");
+const receivedText = document.getElementById("received");
+const remainingText = document.getElementById("remaining");
+const logs = document.getElementById("logs");
+
+let selectedGame = "CS2";
+let downloadTimer = null;
+let logTimer = null;
+
+games.forEach(button => {
+    button.addEventListener("click", () => {
+        games.forEach(item => item.classList.remove("selected"));
+        button.classList.add("selected");
+        selectedGame = button.dataset.game;
+    });
+});
+
+function addLog(message, colorClass = "") {
+    const line = document.createElement("div");
+    line.className = "log-line " + colorClass;
+    line.textContent = "[" + new Date().toLocaleTimeString() + "] " + message;
+    logs.appendChild(line);
+    while (logs.children.length > 9) logs.removeChild(logs.firstChild);
+}
+
+startButton.addEventListener("click", startDownload);
+
+function startDownload() {
+    if (downloadTimer) clearInterval(downloadTimer);
+    if (logTimer) clearInterval(logTimer);
+
+    const type = cheatType.value;
+    const packageName = selectedGame + " " + type;
+
+    chooser.classList.add("hidden");
+    downloadPanel.classList.remove("hidden");
+    consolePanel.classList.remove("hidden");
+
+    startButton.disabled = true;
+    document.getElementById("downloadTitle").textContent = "Running demo: " + packageName;
+    document.getElementById("downloadSubtitle").textContent = "Simulated activity · " + selectedGame;
+
+    progressBar.style.width = "0%";
+    percentText.textContent = "0%";
+    phaseText.textContent = "Initializing demo...";
+    speedText.textContent = "0 MB/s";
+    receivedText.textContent = "0 / 850 MB";
+    remainingText.textContent = "Calculating";
+    logs.replaceChildren();
+
+    const messages = [
+        "[INIT] Starting simulated loader...",
+        "[GAME] Selected game: " + selectedGame,
+        "[PKG] Selected type: " + type,
+        "[NET] Simulating connection...",
+        "[OK] Demo connection ready.",
+        "[DL] Simulating package transfer...",
+        "[SCAN] Running simulated checks...",
+        "[OK] Demo checks complete."
+    ];
+
+    let messageIndex = 0;
+    addLog(messages[messageIndex++], "green");
+
+    logTimer = setInterval(() => {
+        if (messageIndex < messages.length) {
+            addLog(messages[messageIndex++], "green");
+        }
+    }, 1000);
+
+    const durationSeconds = 12;
+    const totalMB = 850;
+    const startedAt = Date.now();
+
+    downloadTimer = setInterval(() => {
+        const elapsed = (Date.now() - startedAt) / 1000;
+        const progress = Math.min(100, elapsed / durationSeconds * 100);
+        const received = Math.floor(progress / 100 * totalMB);
+        const speed = progress >= 100 ? 0 : Math.round(55 + Math.random() * 125);
+
+        progressBar.style.width = progress + "%";
+        percentText.textContent = Math.floor(progress) + "%";
+        speedText.textContent = speed + " MB/s";
+        receivedText.textContent = received + " / " + totalMB + " MB";
+        remainingText.textContent = Math.max(0, durationSeconds - elapsed).toFixed(0) + " sec";
+
+        if (progress < 25) {
+            phaseText.textContent = "Connecting...";
+        } else if (progress < 65) {
+            phaseText.textContent = "Running demo...";
+        } else if (progress < 90) {
+            phaseText.textContent = "Verifying demo...";
+        } else if (progress < 100) {
+            phaseText.textContent = "Finalizing...";
+        } else {
+            phaseText.textContent = "Demo complete";
+            speedText.textContent = "0 MB/s";
+            remainingText.textContent = "Complete";
+
+            clearInterval(downloadTimer);
+            clearInterval(logTimer);
+            downloadTimer = null;
+            logTimer = null;
+
+            addLog("[OK] Demo finished. No files were downloaded.", "green");
+
+            const backButton = document.createElement("button");
+            backButton.className = "start-button";
+            backButton.textContent = "BACK TO GAME SELECTOR";
+            backButton.onclick = () => {
+                downloadPanel.classList.add("hidden");
+                consolePanel.classList.add("hidden");
+                chooser.classList.remove("hidden");
+                startButton.disabled = false;
+                backButton.remove();
+            };
+            downloadPanel.appendChild(backButton);
+        }
+    }, 100);
+}
+</script>
+</body>
+</html>
+
